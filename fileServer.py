@@ -1,9 +1,15 @@
 import http.server, ssl, os
 
+# by default listens to script directory
+# to change directory - use os.chdir, for example:
+# os.chdir("D:\\files") # or
+# os.chdir("/opt/http_files")
+
 # absolute path of pyServer.py
-thisScriptPath=os.path.dirname(os.path.abspath(__file__))+'/'
+# thisScriptPath=os.path.dirname(os.path.abspath(__file__))+'/'
 
 # generate self signed certificate using openssl command
+'''
 def generate_selfsigned_cert():
     try:
         OpenSslCommand = 'openssl req -newkey rsa:4096 -x509 -sha256 -days 3650 -nodes -out '+thisScriptPath+'cert.pem -keyout '+thisScriptPath+'key.pem -subj "/C=IN/ST=Maharashtra/L=Satara/O=Wannabees/OU=KahiHiHa Department/CN=www.iamselfdepartment.com"'
@@ -13,24 +19,28 @@ def generate_selfsigned_cert():
         print('error while generating certificate')
 
 # starts server on provided host and port
+'''
+
 def startServer(host,port):
     server_address = (host, port)
     httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
+    '''
     httpd.socket = ssl.wrap_socket(httpd.socket,
                                 server_side=True,
                                 certfile = thisScriptPath+"cert.pem",
                                 keyfile = thisScriptPath+"key.pem",
                                 ssl_version=ssl.PROTOCOL_TLSv1
                                 )
-    print("File Server started at https://" + server_address[0]+":"+str(server_address[1]))
+    '''
+    print("File Server started at http://" + server_address[0]+":"+str(server_address[1]))
     httpd.serve_forever()
 
 # entry point of script
 def main():
     try:
-        generate_selfsigned_cert()
+        # generate_selfsigned_cert()
         # you can change the host and port
-        startServer('localhost',8000)
+        startServer('0.0.0.0',8000)
     except KeyboardInterrupt:
         print("\nFile Server Stopped!")
 
